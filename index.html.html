@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CreatoxAds.ai — AI-Powered Advertising Agency</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',sans-serif;background:#050508;color:#f0f0f4;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1rem 2.5rem;background:rgba(5,5,8,0.92);border-bottom:0.5px solid rgba(180,190,220,0.08);backdrop-filter:blur(16px)}
+.logo{font-size:17px;font-weight:800;letter-spacing:-0.5px;background:linear-gradient(90deg,#e8e8f0,#90a8d0,#c8d0e8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer}
+.logo span{-webkit-text-fill-color:#7090c0}
+nav ul{display:flex;gap:2rem;list-style:none}
+nav ul li{position:relative}
+nav ul li a{color:rgba(220,225,240,0.45);text-decoration:none;font-size:13px;transition:color 0.2s;cursor:pointer;padding:0.3rem 0}
+nav ul li a:hover,nav ul li a.active{color:#e0e4f0}
+nav ul li a.active::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(100,140,220,0.5),transparent)}
+.nav-cta{background:rgba(80,110,180,0.12);border:0.5px solid rgba(100,130,200,0.25);color:#a0b8e0;padding:0.45rem 1.1rem;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.nav-cta:hover{background:rgba(80,110,180,0.22);color:#d0e0ff}
+
+/* URGENCY BAR */
+.urgency-bar{background:linear-gradient(90deg,rgba(40,55,120,0.6),rgba(60,80,160,0.4),rgba(40,55,120,0.6));border-bottom:0.5px solid rgba(100,130,210,0.2);text-align:center;padding:0.55rem 1rem;font-size:11px;font-weight:500;color:rgba(180,200,240,0.7);letter-spacing:0.8px;position:fixed;top:57px;left:0;right:0;z-index:199}
+.urgency-bar span{color:#a0c0ff}
+
+.page{display:none;min-height:100vh;padding-top:90px}
+.page.active{display:block}
+
+/* HERO */
+.hero{position:relative;min-height:90vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:6rem 2rem 4rem;overflow:hidden}
+canvas#bgc{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(80,110,180,0.1);border:0.5px solid rgba(100,130,200,0.2);color:#7090c0;font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:0.35rem 1rem;border-radius:20px;margin-bottom:1.5rem}
+.hero h1{font-size:clamp(38px,6vw,70px);font-weight:900;line-height:1.02;letter-spacing:-2.5px;max-width:780px;margin-bottom:1.2rem}
+.silver-text{background:linear-gradient(135deg,#d0d8f0 0%,#8098c0 40%,#c0cce0 70%,#9090b8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero-sub{font-size:16px;color:rgba(200,210,230,0.45);max-width:500px;line-height:1.75;font-weight:300;margin-bottom:0.8rem}
+.hero-proof{font-size:12px;color:rgba(140,160,210,0.5);margin-bottom:2.5rem}
+.hero-proof span{color:rgba(160,185,230,0.7)}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:3.5rem}
+.btn-p{background:linear-gradient(135deg,#3858a0,#5878c0);color:#fff;border:none;padding:0.9rem 2.2rem;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.btn-p:hover{opacity:0.85;transform:translateY(-1px)}
+.btn-s{background:transparent;color:rgba(200,215,240,0.6);border:0.5px solid rgba(160,180,220,0.18);padding:0.9rem 2rem;border-radius:8px;font-size:14px;font-weight:500;cursor:pointer;transition:all 0.2s}
+.btn-s:hover{background:rgba(255,255,255,0.04);color:#fff}
+.stats-row{display:flex;gap:2.5rem;justify-content:center;flex-wrap:wrap}
+.stat-num{font-size:26px;font-weight:800;background:linear-gradient(135deg,#d0d8f0,#7088b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px}
+.stat-label{font-size:10px;color:rgba(180,190,220,0.3);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
+.stat-div{width:1px;height:32px;background:rgba(180,190,220,0.1);align-self:center}
+
+/* PROOF STRIP */
+.proof-strip{background:rgba(10,12,25,0.8);border-top:0.5px solid rgba(180,190,220,0.07);border-bottom:0.5px solid rgba(180,190,220,0.07);padding:1.2rem 2rem;display:flex;align-items:center;justify-content:center;gap:2.5rem;flex-wrap:wrap}
+.proof-item{font-size:12px;color:rgba(170,185,220,0.45);display:flex;align-items:center;gap:6px}
+.proof-item i{font-size:14px;color:#6080b8}
+
+/* AMBIENT AD SECTION */
+.ambient-section{position:relative;width:100%;overflow:hidden;border-top:0.5px solid rgba(180,190,220,0.06);border-bottom:0.5px solid rgba(180,190,220,0.06)}
+canvas#abg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+canvas#afig{position:absolute;bottom:0;left:0;width:100%;height:220px;opacity:0;transition:opacity 1s}
+.ambient-content{position:relative;z-index:2;text-align:center;padding:5rem 2rem;min-height:520px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.a-tag{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:rgba(120,150,210,0.5);margin-bottom:1rem;opacity:0;transition:opacity 0.8s}
+.a-hl{font-size:clamp(28px,5vw,54px);font-weight:900;letter-spacing:-2px;line-height:1.05;margin-bottom:1.2rem;min-height:70px}
+.a-word{display:inline-block;opacity:0;transform:translateY(18px);transition:opacity 0.5s,transform 0.5s;margin:0 5px}
+.a-sub{font-size:14px;color:rgba(190,205,230,0.35);font-weight:300;letter-spacing:0.3px;opacity:0;transition:opacity 0.8s;margin-bottom:2rem;min-height:22px}
+.a-pills{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;opacity:0;transition:opacity 0.8s}
+.a-pill{background:rgba(70,100,170,0.08);border:0.5px solid rgba(90,120,190,0.14);color:rgba(170,190,230,0.5);font-size:10px;font-weight:500;letter-spacing:0.5px;padding:5px 13px;border-radius:20px;transition:all 0.3s}
+.a-pill.lit{background:rgba(70,100,170,0.18);border-color:rgba(100,140,220,0.32);color:rgba(190,210,245,0.85)}
+.a-divline{width:0;height:0.5px;background:linear-gradient(90deg,transparent,rgba(110,145,220,0.28),transparent);margin:1.5rem auto;transition:width 1.2s ease}
+.a-divline.open{width:280px}
+.a-price{opacity:0;transition:opacity 0.8s;text-align:center}
+.a-price .pfrom{font-size:11px;color:rgba(160,170,210,0.28);text-decoration:line-through;letter-spacing:0.5px}
+.a-price .pto{font-size:34px;font-weight:900;letter-spacing:-1.5px;background:linear-gradient(135deg,#c8d0e8,#6888c0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.a-price .pnote{font-size:10px;color:rgba(150,170,215,0.32);letter-spacing:0.5px;margin-top:3px}
+.a-cta{opacity:0;transition:opacity 0.8s;margin-top:1.5rem}
+.a-cta span{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:rgba(110,145,210,0.45);border-bottom:0.5px solid rgba(110,145,210,0.18);padding-bottom:3px}
+
+/* SECTIONS */
+.section{padding:5rem 2.5rem;max-width:1060px;margin:0 auto}
+.sec-label{font-size:10px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:#6080b8;margin-bottom:0.8rem}
+.sec-title{font-size:clamp(26px,4vw,40px);font-weight:800;letter-spacing:-1.2px;line-height:1.08;color:#e8eaf4;margin-bottom:0.8rem}
+.sec-sub{font-size:15px;color:rgba(190,200,225,0.38);font-weight:300;max-width:480px;line-height:1.75;margin-bottom:3rem}
+
+/* COMPARE */
+.compare-wrap{display:flex;align-items:center;justify-content:center;gap:1.5rem;margin:0 0 3.5rem;flex-wrap:wrap}
+.compare-box{text-align:center;background:rgba(10,10,20,0.6);border:0.5px solid rgba(180,190,220,0.08);border-radius:12px;padding:1.2rem 2rem}
+.compare-old{font-size:11px;color:rgba(160,170,210,0.3);text-decoration:line-through;margin-bottom:4px}
+.compare-new{font-size:24px;font-weight:800;letter-spacing:-1px;background:linear-gradient(135deg,#d0d8f0,#7090c0);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.compare-tag{font-size:10px;background:rgba(60,90,160,0.15);border:0.5px solid rgba(80,110,180,0.2);color:#7090b8;padding:3px 10px;border-radius:10px;margin-top:5px;letter-spacing:0.5px;display:inline-block}
+
+/* SCARCITY */
+.scarcity{background:linear-gradient(135deg,rgba(30,45,100,0.4),rgba(20,30,70,0.6));border:0.5px solid rgba(90,120,200,0.18);border-radius:14px;padding:2.5rem 2rem;text-align:center;margin:2rem 0}
+.scarcity h3{font-size:22px;font-weight:800;letter-spacing:-0.8px;color:#e0e8f8;margin-bottom:0.6rem}
+.scarcity p{font-size:13px;color:rgba(175,190,230,0.42);line-height:1.7;max-width:520px;margin:0 auto 1.5rem}
+.scarcity-points{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-bottom:1.8rem}
+.sc-pt{font-size:12px;color:rgba(160,185,230,0.55);display:flex;align-items:center;gap:6px}
+.sc-pt i{color:#6888c0;font-size:14px}
+
+/* SERVICES PAGE */
+.svc-page{padding:3rem 2.5rem;max-width:1060px;margin:0 auto}
+.svc-header{text-align:center;margin-bottom:3rem}
+.svc-filter{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:3rem}
+.filter-btn{background:rgba(70,95,160,0.08);border:0.5px solid rgba(90,115,180,0.15);color:rgba(170,185,225,0.45);font-size:11px;font-weight:500;letter-spacing:0.5px;padding:6px 16px;border-radius:20px;cursor:pointer;transition:all 0.2s}
+.filter-btn:hover,.filter-btn.active{background:rgba(70,100,180,0.18);border-color:rgba(100,135,220,0.3);color:rgba(200,215,245,0.85)}
+.svc-big-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+.svc-big-card{background:#080810;border:0.5px solid rgba(160,180,220,0.09);border-radius:16px;padding:2rem;transition:all 0.25s;cursor:pointer;position:relative;overflow:hidden}
+.svc-big-card:hover{border-color:rgba(90,120,200,0.28);background:#0c0c1c;transform:translateY(-2px)}
+.svc-card-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.2rem}
+.svc-big-icon{width:44px;height:44px;border-radius:11px;background:rgba(70,100,180,0.1);border:0.5px solid rgba(90,120,200,0.18);display:flex;align-items:center;justify-content:center;font-size:20px;color:#6888b8}
+.svc-badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 10px;border-radius:10px}
+.badge-hot{background:rgba(80,105,200,0.15);color:#7898d8;border:0.5px solid rgba(90,115,200,0.2)}
+.badge-new{background:rgba(50,130,100,0.12);color:#60b890;border:0.5px solid rgba(50,130,100,0.2)}
+.badge-popular{background:rgba(150,100,30,0.12);color:#c0902a;border:0.5px solid rgba(150,100,30,0.2)}
+.svc-big-name{font-size:17px;font-weight:700;color:#d0d8f0;margin-bottom:0.5rem;letter-spacing:-0.3px}
+.svc-big-desc{font-size:13px;color:rgba(170,185,220,0.42);line-height:1.7;font-weight:300;margin-bottom:1.4rem}
+.svc-features{list-style:none;margin-bottom:1.4rem}
+.svc-features li{font-size:11px;color:rgba(165,180,220,0.45);padding:0.28rem 0;display:flex;align-items:center;gap:6px;border-bottom:0.5px solid rgba(160,180,220,0.05)}
+.svc-features li i{color:#5070b0;font-size:12px}
+.svc-card-footer{display:flex;align-items:center;justify-content:space-between}
+.svc-price{font-size:13px;font-weight:700;color:rgba(160,185,230,0.6)}
+.svc-price span{font-size:10px;font-weight:400;color:rgba(140,160,210,0.35)}
+.svc-cta-btn{background:rgba(60,88,160,0.15);border:0.5px solid rgba(80,110,180,0.22);color:rgba(160,185,230,0.65);font-size:11px;font-weight:600;padding:6px 14px;border-radius:7px;cursor:pointer;transition:all 0.2s;letter-spacing:0.3px}
+.svc-cta-btn:hover{background:rgba(60,88,160,0.28);color:#d0e4ff}
+.svc-cta-banner{background:linear-gradient(135deg,rgba(30,48,110,0.35),rgba(18,25,65,0.55));border:0.5px solid rgba(90,120,200,0.16);border-radius:16px;padding:3rem 2rem;text-align:center;margin-top:3rem}
+.svc-cta-banner h3{font-size:26px;font-weight:800;letter-spacing:-1px;color:#e0e8f8;margin-bottom:0.6rem}
+.svc-cta-banner p{font-size:13px;color:rgba(175,190,230,0.42);margin-bottom:1.5rem;line-height:1.7}
+
+/* PRICING */
+.price-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}
+.price-card{background:#080810;border:0.5px solid rgba(160,180,220,0.09);border-radius:14px;padding:1.8rem 1.5rem;position:relative;transition:border-color 0.2s}
+.price-card:hover{border-color:rgba(90,120,200,0.25)}
+.price-card.feat{border-color:rgba(90,120,200,0.32);background:#0a0a18}
+.feat-badge{position:absolute;top:-1px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#3858a0,#5878c0);color:#fff;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:4px 14px;border-radius:0 0 8px 8px}
+.plan-tag{font-size:10px;font-weight:600;color:rgba(160,175,220,0.4);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:0.9rem}
+.plan-was{font-size:11px;color:rgba(150,160,210,0.3);text-decoration:line-through;margin-bottom:2px}
+.plan-price{font-size:38px;font-weight:900;letter-spacing:-2px;color:#e8eaf4;margin-bottom:0.2rem}
+.plan-price sub{font-size:14px;font-weight:400;color:rgba(160,175,220,0.35);letter-spacing:0}
+.plan-note{font-size:11px;color:rgba(150,165,210,0.35);margin-bottom:1.5rem;line-height:1.5}
+.plan-feats{list-style:none;margin-bottom:1.8rem}
+.plan-feats li{font-size:12px;color:rgba(185,198,225,0.5);padding:0.35rem 0;display:flex;align-items:center;gap:7px;border-bottom:0.5px solid rgba(160,180,220,0.05)}
+.plan-feats li i{color:#5878b8;font-size:13px}
+.pbtn{width:100%;padding:0.7rem;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;letter-spacing:0.2px}
+.pbtn-o{background:transparent;border:0.5px solid rgba(160,180,220,0.18);color:rgba(185,200,230,0.55)}
+.pbtn-o:hover{background:rgba(255,255,255,0.04);color:#fff}
+.pbtn-f{background:linear-gradient(135deg,#3858a0,#5878c0);border:none;color:#fff}
+.pbtn-f:hover{opacity:0.85}
+.limited-tag{font-size:10px;color:rgba(160,190,240,0.45);text-align:center;margin-top:0.8rem;letter-spacing:0.5px}
+
+/* VIRALITY */
+.vir-section{background:linear-gradient(135deg,rgba(30,45,110,0.14),rgba(15,20,50,0.3));border:0.5px solid rgba(90,120,200,0.14);border-radius:18px;padding:3.5rem 2.5rem;text-align:center}
+.vir-score{font-size:76px;font-weight:900;background:linear-gradient(135deg,#c0cce0,#5878b8,#a0b0d0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-4px;line-height:1;margin:1rem 0 0.3rem}
+.vir-label{font-size:10px;color:rgba(150,170,215,0.4);letter-spacing:2px;text-transform:uppercase;margin-bottom:1.5rem}
+.vir-bars{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin:1.5rem 0}
+.vir-bar{flex:1;min-width:120px;max-width:160px}
+.vir-bar-label{font-size:10px;color:rgba(150,170,215,0.4);margin-bottom:6px;letter-spacing:0.5px}
+.vir-bar-track{height:3px;background:rgba(160,180,220,0.08);border-radius:2px;overflow:hidden}
+.vir-bar-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#3858a0,#7090c0)}
+
+/* TESTIMONIALS */
+.test-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem}
+.test-card{background:#080810;border:0.5px solid rgba(160,180,220,0.08);border-radius:12px;padding:1.5rem}
+.test-stars{color:#5878b8;font-size:12px;margin-bottom:0.8rem;letter-spacing:2px}
+.test-text{font-size:12px;color:rgba(180,195,230,0.45);line-height:1.7;margin-bottom:1rem;font-style:italic}
+.test-author{font-size:11px;font-weight:600;color:rgba(160,178,220,0.55)}
+.test-role{font-size:10px;color:rgba(140,158,210,0.3)}
+
+/* CTA */
+.cta-wrap{text-align:center;padding:5rem 2rem}
+.cta-wrap h2{font-size:clamp(28px,5vw,52px);font-weight:900;letter-spacing:-2px;color:#e8eaf4;margin-bottom:0.8rem;line-height:1.05}
+.cta-wrap p{font-size:15px;color:rgba(190,205,230,0.38);margin-bottom:0.5rem;font-weight:300}
+.urgency-note{font-size:12px;color:rgba(140,165,220,0.45);margin-bottom:2rem;letter-spacing:0.3px}
+.money-back{font-size:11px;color:rgba(140,160,215,0.35);margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:5px}
+
+/* ABOUT */
+.about-story{background:linear-gradient(135deg,rgba(30,45,110,0.2),rgba(15,20,55,0.35));border:0.5px solid rgba(90,120,200,0.14);border-radius:16px;padding:2.5rem;margin-bottom:2rem}
+.about-story h3{font-size:18px;font-weight:700;color:#d8e0f4;margin-bottom:1rem;letter-spacing:-0.5px}
+.about-story p{font-size:14px;color:rgba(175,190,230,0.42);line-height:1.8;font-weight:300}
+
+footer{border-top:0.5px solid rgba(180,190,220,0.07);padding:1.8rem 2.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+footer p{font-size:11px;color:rgba(160,175,220,0.2)}
+.footer-links{display:flex;gap:1.5rem}
+.footer-links a{font-size:11px;color:rgba(160,175,220,0.2);text-decoration:none;cursor:pointer}
+.footer-links a:hover{color:rgba(160,175,220,0.45)}
+</style>
+</head>
+<body>
+
+<div class="urgency-bar">
+  <i class="ti ti-flame"></i>
+  &nbsp; Founding client pricing — <span>limited spots available at these rates.</span> &nbsp; Lock in before prices increase.
+</div>
+
+<nav>
+  <div class="logo" onclick="showPage('home')">Creatox<span>Ads</span>.ai</div>
+  <ul>
+    <li><a id="nav-services" onclick="showPage('services')">Services</a></li>
+    <li><a id="nav-pricing" onclick="showPage('pricing')">Pricing</a></li>
+    <li><a id="nav-about" onclick="showPage('about')">About</a></li>
+  </ul>
+  <button class="nav-cta" onclick="showPage('services')">Get a Quote →</button>
+</nav>
+
+<!-- HOME PAGE -->
+<div class="page active" id="page-home">
+  <div class="hero">
+    <canvas id="bgc"></canvas>
+    <div class="hero-badge"><i class="ti ti-sparkles"></i> AI-Powered Advertising Agency</div>
+    <h1><span style="color:#f0f0f4">The Future of Advertising</span><br><span class="silver-text">Is Already Here</span></h1>
+    <p class="hero-sub">Hollywood-quality ads at a fraction of the cost. Every format. Every industry. Powered by the most advanced AI on the planet.</p>
+    <p class="hero-proof">No agency is offering this quality at these prices. <span>Not even close.</span></p>
+    <div class="hero-btns">
+      <button class="btn-p" onclick="showPage('services')">Claim Your Spot</button>
+      <button class="btn-s" onclick="showPage('services')">See What We Do →</button>
+    </div>
+    <div class="stats-row">
+      <div class="stat"><div class="stat-num">$149</div><div class="stat-label">Starting price</div></div>
+      <div class="stat-div"></div>
+      <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Ad formats</div></div>
+      <div class="stat-div"></div>
+      <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Virality checked</div></div>
+      <div class="stat-div"></div>
+      <div class="stat"><div class="stat-num">48hr</div><div class="stat-label">Turnaround</div></div>
+    </div>
+  </div>
+
+  <div class="proof-strip">
+    <div class="proof-item"><i class="ti ti-check"></i> No long-term contracts</div>
+    <div class="proof-item"><i class="ti ti-check"></i> Revisions included</div>
+    <div class="proof-item"><i class="ti ti-check"></i> AI virality score on every order</div>
+    <div class="proof-item"><i class="ti ti-check"></i> 48hr delivery</div>
+    <div class="proof-item"><i class="ti ti-check"></i> Every format under one roof</div>
+  </div>
+
+  <!-- AMBIENT AD -->
+  <div class="ambient-section">
+    <canvas id="abg"></canvas>
+    <canvas id="afig"></canvas>
+    <div class="ambient-content">
+      <div class="a-tag" id="atag">The Future of Advertising</div>
+      <div class="a-hl" id="ahl"></div>
+      <div class="a-divline" id="adiv"></div>
+      <div class="a-sub" id="asub"></div>
+      <div class="a-pills" id="apills"></div>
+      <div class="a-price" id="aprice">
+        <div class="pfrom">Traditional agency: $50,000–$100,000</div>
+        <div class="pto">Starting at $149</div>
+        <div class="pnote">Every format. Every industry. AI virality guaranteed.</div>
+      </div>
+      <div class="a-cta" id="acta"><span>CreatoxAds.ai — Don't miss the shift</span></div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="sec-label">The Opportunity</div>
+    <div class="sec-title">No Agency Is Doing<br>What We're Doing</div>
+    <div class="sec-sub">The same ads that cost brands $50,000–$100,000 at traditional agencies? We produce them for a fraction of the price — and no one else is offering this quality at anywhere near these rates.</div>
+    <div class="compare-wrap">
+      <div class="compare-box"><div class="compare-old">Traditional agency cost</div><div class="compare-new">$50,000–$100,000</div><div class="compare-tag">6–8 week turnaround</div></div>
+      <div style="font-size:22px;color:rgba(90,120,190,0.35)">→</div>
+      <div class="compare-box"><div class="compare-old">CreatoxAds.ai founding price</div><div class="compare-new">Starting at $149</div><div class="compare-tag">48hr turnaround</div></div>
+    </div>
+    <div class="scarcity">
+      <h3>This Is a Once-in-a-Generation Shift</h3>
+      <p>AI has made Hollywood-quality ad production available to everyone — but most brands don't know it yet. The agencies charging $100K are still charging $100K. We're not. This founding pricing won't last.</p>
+      <div class="scarcity-points">
+        <div class="sc-pt"><i class="ti ti-clock"></i> Founding rates end soon</div>
+        <div class="sc-pt"><i class="ti ti-users"></i> Limited client spots open</div>
+        <div class="sc-pt"><i class="ti ti-trending-up"></i> Prices will increase as we grow</div>
+      </div>
+      <button class="btn-p" onclick="showPage('services')">Lock In Founding Pricing</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="vir-section">
+      <div class="sec-label">Our Guarantee</div>
+      <div class="vir-score">94</div>
+      <div class="vir-label">Virality Score</div>
+      <div class="sec-title" style="margin-top:1.2rem">AI Virality Guarantee</div>
+      <div class="sec-sub" style="margin:0 auto 1.5rem;text-align:center">Every ad we produce is run through our proprietary AI virality predictor before delivery. We score engagement potential, hook strength, attention retention and audience response — so you know how your ad will perform before it goes live.</div>
+      <div class="vir-bars">
+        <div class="vir-bar"><div class="vir-bar-label">Hook Strength</div><div class="vir-bar-track"><div class="vir-bar-fill" style="width:92%"></div></div></div>
+        <div class="vir-bar"><div class="vir-bar-label">Engagement</div><div class="vir-bar-track"><div class="vir-bar-fill" style="width:88%"></div></div></div>
+        <div class="vir-bar"><div class="vir-bar-label">Retention</div><div class="vir-bar-track"><div class="vir-bar-fill" style="width:95%"></div></div></div>
+        <div class="vir-bar"><div class="vir-bar-label">Audience Fit</div><div class="vir-bar-track"><div class="vir-bar-fill" style="width:90%"></div></div></div>
+      </div>
+      <button class="btn-p" onclick="showPage('about')">Learn More</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="sec-label">What Clients Say</div>
+    <div class="sec-title">Results That Speak<br>For Themselves</div>
+    <div class="test-grid">
+      <div class="test-card"><div class="test-stars">★★★★★</div><div class="test-text">"We paid $80K for a commercial last year. CreatoxAds delivered something better in 48 hours for $399. I genuinely couldn't believe it."</div><div class="test-author">Marcus T.</div><div class="test-role">Founder, DTC Supplement Brand</div></div>
+      <div class="test-card"><div class="test-stars">★★★★★</div><div class="test-text">"The virality score actually predicted our ad would perform well — and it did. 2.3M views in the first week."</div><div class="test-author">Priya K.</div><div class="test-role">Head of Marketing, E-Commerce Brand</div></div>
+      <div class="test-card"><div class="test-stars">★★★★★</div><div class="test-text">"No other agency is doing this. The quality, the speed, the price — it's not even a competition. This is the future."</div><div class="test-author">Jordan M.</div><div class="test-role">Creative Director, Apparel Brand</div></div>
+    </div>
+  </section>
+
+  <div class="cta-wrap">
+    <h2>The Window Is Open.<br><span class="silver-text">Don't Miss It.</span></h2>
+    <p>No agencies are throwing out these prices. Especially not for this quality.</p>
+    <p class="urgency-note">Founding pricing ends when our first 50 client spots are filled.</p>
+    <div class="hero-btns" style="margin-bottom:0.5rem">
+      <button class="btn-p" onclick="showPage('services')">Claim Your Spot Now</button>
+      <button class="btn-s" onclick="showPage('about')">Talk to Us First</button>
+    </div>
+    <div class="money-back"><i class="ti ti-shield-check"></i> Satisfaction guaranteed or we redo your ad free</div>
+  </div>
+
+  <footer>
+    <div class="logo" style="font-size:14px">Creatox<span>Ads</span>.ai</div>
+    <p>© 2026 CreatoxAds.ai — All rights reserved</p>
+    <div class="footer-links"><a>Privacy</a><a>Terms</a><a>Contact</a></div>
+  </footer>
+</div>
+
+<!-- SERVICES PAGE -->
+<div class="page" id="page-services">
+  <div class="svc-page">
+    <div class="svc-header">
+      <div class="sec-label">What We Create</div>
+      <div class="sec-title" style="text-align:center">Every Ad Format.<br><span class="silver-text">One Agency.</span></div>
+      <div class="sec-sub" style="margin:0.8rem auto 0;text-align:center">All AI-powered, all delivered in 48 hours, all at prices no other agency can touch.</div>
+    </div>
+    <div class="svc-filter">
+      <button class="filter-btn active" onclick="filterSvc('all',this)">All Formats</button>
+      <button class="filter-btn" onclick="filterSvc('video',this)">Video Ads</button>
+      <button class="filter-btn" onclick="filterSvc('social',this)">Social Media</button>
+      <button class="filter-btn" onclick="filterSvc('product',this)">Product Ads</button>
+      <button class="filter-btn" onclick="filterSvc('animation',this)">Animation</button>
+    </div>
+    <div class="svc-big-grid" id="svcGrid"></div>
+    <div class="svc-cta-banner">
+      <h3>Not Sure Which Format?</h3>
+      <p>Tell us about your brand and we'll recommend the exact ad format that will perform best for your audience — completely free.</p>
+      <button class="btn-p">Get a Free Recommendation →</button>
+    </div>
+  </div>
+  <footer>
+    <div class="logo" style="font-size:14px">Creatox<span>Ads</span>.ai</div>
+    <p>© 2026 CreatoxAds.ai — All rights reserved</p>
+    <div class="footer-links"><a>Privacy</a><a>Terms</a><a>Contact</a></div>
+  </footer>
+</div>
+
+<!-- PRICING PAGE -->
+<div class="page" id="page-pricing">
+  <div class="svc-page">
+    <div class="svc-header">
+      <div class="sec-label">Pricing</div>
+      <div class="sec-title" style="text-align:center">Transparent Pricing.<br><span class="silver-text">Unbeatable Value.</span></div>
+      <div class="sec-sub" style="margin:0.8rem auto 0;text-align:center">Every plan includes our AI virality score guarantee. No hidden fees. No long contracts.</div>
+    </div>
+    <div class="price-grid">
+      <div class="price-card">
+        <div class="plan-tag">Starter</div>
+        <div class="plan-was">Was $299</div>
+        <div class="plan-price">$149<sub>/ad</sub></div>
+        <div class="plan-note">Perfect for your first AI ad.</div>
+        <ul class="plan-feats">
+          <li><i class="ti ti-check"></i>1 ad in any format</li>
+          <li><i class="ti ti-check"></i>1 revision included</li>
+          <li><i class="ti ti-check"></i>AI virality score report</li>
+          <li><i class="ti ti-check"></i>48hr delivery</li>
+        </ul>
+        <button class="pbtn pbtn-o">Get Started</button>
+        <div class="limited-tag">Founding rate — won't last</div>
+      </div>
+      <div class="price-card feat">
+        <div class="feat-badge">Most Popular</div>
+        <div class="plan-tag">Growth</div>
+        <div class="plan-was">Was $799/mo</div>
+        <div class="plan-price">$399<sub>/mo</sub></div>
+        <div class="plan-note">For brands ready to scale.</div>
+        <ul class="plan-feats">
+          <li><i class="ti ti-check"></i>3 ads per month</li>
+          <li><i class="ti ti-check"></i>All formats available</li>
+          <li><i class="ti ti-check"></i>Unlimited revisions</li>
+          <li><i class="ti ti-check"></i>Full virality report</li>
+          <li><i class="ti ti-check"></i>Priority 24hr delivery</li>
+        </ul>
+        <button class="pbtn pbtn-f">Claim This Rate</button>
+        <div class="limited-tag">Limited spots at this price</div>
+      </div>
+      <div class="price-card">
+        <div class="plan-tag">Agency</div>
+        <div class="plan-was">Was $1,999/mo</div>
+        <div class="plan-price">$999<sub>/mo</sub></div>
+        <div class="plan-note">Full-scale AI campaign production.</div>
+        <ul class="plan-feats">
+          <li><i class="ti ti-check"></i>Unlimited ads</li>
+          <li><i class="ti ti-check"></i>Every format + 3D</li>
+          <li><i class="ti ti-check"></i>Dedicated account manager</li>
+          <li><i class="ti ti-check"></i>Full campaign strategy</li>
+          <li><i class="ti ti-check"></i>Same-day turnaround</li>
+        </ul>
+        <button class="pbtn pbtn-o">Contact Us</button>
+        <div class="limited-tag">Only 5 agency spots open</div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="logo" style="font-size:14px">Creatox<span>Ads</span>.ai</div>
+    <p>© 2026 CreatoxAds.ai — All rights reserved</p>
+    <div class="footer-links"><a>Privacy</a><a>Terms</a><a>Contact</a></div>
+  </footer>
+</div>
+
+<!-- ABOUT PAGE -->
+<div class="page" id="page-about">
+  <div class="svc-page">
+    <div class="svc-header">
+      <div class="sec-label">About Us</div>
+      <div class="sec-title" style="text-align:center">We're Not a<br><span class="silver-text">Traditional Agency.</span></div>
+      <div class="sec-sub" style="margin:0.8rem auto 0;text-align:center">We're AI-native, fast, and obsessed with results. While legacy agencies charge $100K and take 8 weeks, we deliver better for $149 in 48 hours.</div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:3rem">
+      <div style="background:#080810;border:0.5px solid rgba(160,180,220,0.09);border-radius:14px;padding:2rem;text-align:center"><div style="font-size:36px;font-weight:900;background:linear-gradient(135deg,#d0d8f0,#7090c0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px;margin-bottom:0.4rem">10+</div><div style="font-size:12px;color:rgba(170,185,225,0.45)">Ad formats available</div></div>
+      <div style="background:#080810;border:0.5px solid rgba(160,180,220,0.09);border-radius:14px;padding:2rem;text-align:center"><div style="font-size:36px;font-weight:900;background:linear-gradient(135deg,#d0d8f0,#7090c0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px;margin-bottom:0.4rem">48hr</div><div style="font-size:12px;color:rgba(170,185,225,0.45)">Average delivery time</div></div>
+      <div style="background:#080810;border:0.5px solid rgba(160,180,220,0.09);border-radius:14px;padding:2rem;text-align:center"><div style="font-size:36px;font-weight:900;background:linear-gradient(135deg,#d0d8f0,#7090c0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-1px;margin-bottom:0.4rem">100%</div><div style="font-size:12px;color:rgba(170,185,225,0.45)">AI virality guaranteed</div></div>
+    </div>
+    <div class="about-story">
+      <h3>Why CreatoxAds.ai Exists</h3>
+      <p>The advertising industry has been broken for too long. Small and mid-size brands have been priced out of quality production — forced to either pay $50,000–$100,000 to a traditional agency or settle for low-quality content that doesn't convert. AI changed everything. We built CreatoxAds.ai to give every brand access to the same quality that Fortune 500 companies have been paying a premium for — at a price that's actually accessible.</p>
+    </div>
+    <div style="text-align:center;padding:2rem 0">
+      <button class="btn-p" onclick="showPage('services')">Work With Us →</button>
+    </div>
+  </div>
+  <footer>
+    <div class="logo" style="font-size:14px">Creatox<span>Ads</span>.ai</div>
+    <p>© 2026 CreatoxAds.ai — All rights reserved</p>
+    <div class="footer-links"><a>Privacy</a><a>Terms</a><a>Contact</a></div>
+  </footer>
+</div>
+
+<script>
+const services=[
+  {name:'Influencer-Style Ads',icon:'ti-player-play',desc:'Authentic UGC-style content that looks and feels like real creator posts. Converts like organic content but built entirely by AI.',features:['Realistic presenter delivery','Platform-optimized formats','Multiple variations per order'],price:'From $30',badge:'hot',cats:['video','social']},
+  {name:'Hollywood Commercials',icon:'ti-movie',desc:'Cinematic brand films with production value that rivals TV spots and major agency work — delivered in 48 hours.',features:['Cinema-grade visual quality','Full narrative storytelling','Broadcast-ready output'],price:'From $220',badge:'popular',cats:['video']},
+  {name:'3D Product Animations',icon:'ti-box',desc:'Stunning photorealistic 3D renders that showcase your product from every angle — perfect for e-commerce and launch campaigns.',features:['360° product showcase','4K resolution output','Custom color & texture'],price:'From $199',badge:'new',cats:['animation','product']},
+  {name:'Viral Creative Ads',icon:'ti-rocket',desc:'Unexpected, scroll-stopping creative that breaks through the noise and gets people talking. Our most shared format.',features:['Trend-aware concepts','Hook-optimized structure','Virality score guaranteed'],price:'From $149',badge:'hot',cats:['video','social']},
+  {name:'AI Spokesperson Ads',icon:'ti-user-circle',desc:'Realistic virtual presenters delivering your brand message directly to camera — indistinguishable from real talent.',features:['Custom avatar creation','Script & delivery included','Multiple languages available'],price:'From $99',badge:null,cats:['video','social']},
+  {name:'Unboxing & Review Ads',icon:'ti-package',desc:'High-converting product reveal content that builds trust and drives purchase decisions for e-commerce brands.',features:['Authentic unboxing style','Review narrative included','Platform-ready formats'],price:'From $40',badge:null,cats:['video','product','social']},
+  {name:'Hyper Motion Text Video',icon:'ti-bolt',desc:'Bold kinetic typography that stops scrolls dead — fast cuts, data visuals, and punchy text that demands attention.',features:['Kinetic typography','Data visualization','Fast-cut editing'],price:'From $79.99',badge:'hot',cats:['video','social']},
+  {name:'Virtual Try-On Ads',icon:'ti-shirt',desc:'Let customers visualize your product on themselves before they buy — dramatically increases conversion rates.',features:['Apparel & accessories','Photorealistic rendering','Seamless product integration'],price:'From $199',badge:'new',cats:['product','animation']},
+  {name:'Animated Story Ads',icon:'ti-timeline',desc:'Premium motion graphics and animated storytelling that explain your brand, product or service in a visually compelling way.',features:['Custom animation style','Brand color integration','Narration included'],price:'From $129',badge:null,cats:['animation','social']},
+  {name:'Scroll-Stopping Statics',icon:'ti-photo',desc:'4K product images and DTC visuals designed to stop the scroll and drive clicks on every ad platform.',features:['4K resolution output','Multiple aspect ratios','Ad copy overlay option'],price:'From $30',badge:null,cats:['product','social']},
+];
+
+function renderSvcs(filter='all'){
+  const grid=document.getElementById('svcGrid');
+  if(!grid)return;
+  grid.innerHTML='';
+  const filtered=filter==='all'?services:services.filter(s=>s.cats.includes(filter));
+  filtered.forEach(s=>{
+    const badgeHtml=s.badge?`<span class="svc-badge badge-${s.badge}">${s.badge==='hot'?'Hot':s.badge==='new'?'New':'Popular'}</span>`:'';
+    const feats=s.features.map(f=>`<li><i class="ti ti-check"></i>${f}</li>`).join('');
+    grid.innerHTML+=`<div class="svc-big-card">
+      <div class="svc-card-top"><div class="svc-big-icon"><i class="ti ${s.icon}"></i></div>${badgeHtml}</div>
+      <div class="svc-big-name">${s.name}</div>
+      <div class="svc-big-desc">${s.desc}</div>
+      <ul class="svc-features">${feats}</ul>
+      <div class="svc-card-footer">
+        <div class="svc-price">${s.price} <span>/ founding rate</span></div>
+        <button class="svc-cta-btn">Order Now</button>
+      </div>
+    </div>`;
+  });
+}
+
+function filterSvc(cat,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSvcs(cat);
+}
+
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('nav ul li a').forEach(a=>a.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  const navEl=document.getElementById('nav-'+name);
+  if(navEl)navEl.classList.add('active');
+  if(name==='services')renderSvcs();
+  window.scrollTo(0,0);
+}
+
+renderSvcs();
+
+// BG CANVAS
+const bgc=document.getElementById('bgc');
+if(bgc){
+  const bc=bgc.getContext('2d');
+  function resizeBg(){bgc.width=bgc.offsetWidth;bgc.height=bgc.offsetHeight}
+  resizeBg();
+  let pts=[];
+  for(let i=0;i<90;i++) pts.push({x:Math.random()*bgc.width,y:Math.random()*bgc.height,vx:(Math.random()-0.5)*0.15,vy:(Math.random()-0.5)*0.15,r:Math.random()*1.4+0.3,a:Math.random()*0.35+0.05});
+  function drawBg(){
+    bc.clearRect(0,0,bgc.width,bgc.height);
+    pts.forEach(p=>{bc.beginPath();bc.arc(p.x,p.y,p.r,0,Math.PI*2);bc.fillStyle=`rgba(155,175,225,${p.a})`;bc.fill();p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>bgc.width)p.vx*=-1;if(p.y<0||p.y>bgc.height)p.vy*=-1;});
+    for(let i=0;i<pts.length;i++) for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<85){bc.beginPath();bc.moveTo(pts[i].x,pts[i].y);bc.lineTo(pts[j].x,pts[j].y);bc.strokeStyle=`rgba(115,145,205,${0.04*(1-d/85)})`;bc.lineWidth=0.5;bc.stroke();}}
+    requestAnimationFrame(drawBg);
+  }
+  drawBg();
+  window.addEventListener('resize',resizeBg);
+}
+
+// AMBIENT ANIMATION
+const ac=document.getElementById('abg'),afc=document.getElementById('afig');
+if(ac&&afc){
+  const acc=ac.getContext('2d'),afcc=afc.getContext('2d');
+  function resizeA(){ac.width=ac.offsetWidth;ac.height=ac.offsetHeight;afc.width=afc.offsetWidth;afc.height=afc.offsetHeight;}
+  resizeA();
+  let apts=[];
+  for(let i=0;i<80;i++) apts.push({x:Math.random()*ac.width,y:Math.random()*ac.height,vx:(Math.random()-0.5)*0.14,vy:(Math.random()-0.5)*0.14,r:Math.random()*1.2+0.3,a:Math.random()*0.3+0.04});
+  function drawAbg(){
+    acc.clearRect(0,0,ac.width,ac.height);
+    apts.forEach(p=>{acc.beginPath();acc.arc(p.x,p.y,p.r,0,Math.PI*2);acc.fillStyle=`rgba(150,170,220,${p.a})`;acc.fill();p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>ac.width)p.vx*=-1;if(p.y<0||p.y>ac.height)p.vy*=-1;});
+    for(let i=0;i<apts.length;i++) for(let j=i+1;j<apts.length;j++){const dx=apts[i].x-apts[j].x,dy=apts[i].y-apts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<80){acc.beginPath();acc.moveTo(apts[i].x,apts[i].y);acc.lineTo(apts[j].x,apts[j].y);acc.strokeStyle=`rgba(110,140,205,${0.04*(1-d/80)})`;acc.lineWidth=0.5;acc.stroke();}}
+    requestAnimationFrame(drawAbg);
+  }
+  drawAbg();
+
+  let figP=0,figVis=false;
+  const figs=[{label:'Influencer Ad',x:0.12},{label:'3D Animation',x:0.3},{label:'Cinematic Film',x:0.5},{label:'Viral Creative',x:0.7},{label:'AI Spokesperson',x:0.88}];
+  function drawFig(fig,p,W,H){
+    const cx=fig.x*W,cy=H*0.52,mp=Math.min(p,1);
+    afcc.strokeStyle=`rgba(90,120,200,${0.4*mp})`;afcc.fillStyle=`rgba(90,120,200,${0.4*mp})`;afcc.lineWidth=1.5;afcc.lineCap='round';
+    afcc.beginPath();afcc.arc(cx,cy-38,8*mp,0,Math.PI*2);afcc.stroke();
+    if(mp>0.3){const b=Math.min((mp-0.3)/0.7,1);afcc.beginPath();afcc.moveTo(cx,cy-30);afcc.lineTo(cx,cy-30+20*b);afcc.stroke();}
+    if(mp>0.5){const a=Math.min((mp-0.5)/0.5,1);afcc.beginPath();afcc.moveTo(cx,cy-25);afcc.lineTo(cx-12*a,cy-15);afcc.stroke();afcc.beginPath();afcc.moveTo(cx,cy-25);afcc.lineTo(cx+12*a,cy-15);afcc.stroke();}
+    if(mp>0.7){const l=Math.min((mp-0.7)/0.3,1);afcc.beginPath();afcc.moveTo(cx,cy-10);afcc.lineTo(cx-8*l,cy+14*l);afcc.stroke();afcc.beginPath();afcc.moveTo(cx,cy-10);afcc.lineTo(cx+8*l,cy+14*l);afcc.stroke();}
+    if(mp>0.88){afcc.fillStyle=`rgba(130,158,220,${0.55*(mp-0.88)/0.12})`;afcc.font='500 10px Inter';afcc.textAlign='center';afcc.fillText(fig.label,cx,cy+30);}
+  }
+  function drawFigs(){
+    if(!figVis)return;
+    const W=afc.width,H=afc.height;
+    afcc.clearRect(0,0,W,H);
+    figP=Math.min(figP+0.007,1);
+    figs.forEach((f,i)=>{const delay=i*0.18;const p=Math.max(0,(figP-delay)/(1-delay*0.4));drawFig(f,p,W,H);});
+    requestAnimationFrame(drawFigs);
+  }
+
+  const svcs=['Influencer-Style Ads','Hollywood Commercials','3D Animations','Viral Creative','AI Spokesperson','Virtual Try-On','Unboxing Ads','Static Ads'];
+  let pillsDone=false;
+  function buildAPills(){
+    if(pillsDone)return;pillsDone=true;
+    const r=document.getElementById('apills');if(!r)return;r.innerHTML='';
+    svcs.forEach((s,i)=>{const d=document.createElement('div');d.className='a-pill';d.textContent=s;d.id=`ap${i}`;r.appendChild(d);});
+  }
+  function lightAPills(){svcs.forEach((_,i)=>{setTimeout(()=>{const e=document.getElementById(`ap${i}`);if(e){e.classList.add('lit');setTimeout(()=>e.classList.remove('lit'),800);}},i*200);});}
+  function aShow(id,delay=0){setTimeout(()=>{const e=document.getElementById(id);if(e)e.style.opacity='1';},delay);}
+  function aHide(id){const e=document.getElementById(id);if(e)e.style.opacity='0';}
+  function setAHl(words,silverIdx){
+    const hl=document.getElementById('ahl');if(!hl)return;hl.innerHTML='';
+    words.forEach((w,i)=>{const s=document.createElement('span');s.className='a-word '+(silverIdx.includes(i)?'silver-text':'');s.style.color=silverIdx.includes(i)?'':'#f0f0f4';s.textContent=w;hl.appendChild(s);setTimeout(()=>{s.style.opacity='1';s.style.transform='translateY(0)';},i*120+100);});
+  }
+  function setASub(text,delay){setTimeout(()=>{const e=document.getElementById('asub');if(!e)return;e.style.opacity='0';e.textContent=text;setTimeout(()=>e.style.opacity='1',100);},delay);}
+  function ambientSeq(){
+    aShow('atag',300);
+    setTimeout(()=>setAHl(['AI','Ads.','Reinvented.'],[0,1]),600);
+    setASub('Every format. Built by AI. Priced for everyone.',1400);
+    setTimeout(()=>{const d=document.getElementById('adiv');if(d)d.classList.add('open');},1800);
+    setTimeout(()=>{buildAPills();aShow('apills',0);lightAPills();},2400);
+    setTimeout(()=>setInterval(lightAPills,2500),3000);
+    setTimeout(()=>{
+      aHide('atag');
+      const hl=document.getElementById('ahl');
+      if(hl)Array.from(hl.querySelectorAll('.a-word')).forEach(w=>{w.style.opacity='0';w.style.transform='translateY(-15px)';});
+      setASub('',100);
+      setTimeout(()=>{setAHl(['No','Studios.','No','Actors.'],[1,3]);setASub('Just AI — and results that speak for themselves.',600);},500);
+    },5500);
+    setTimeout(()=>{figVis=true;if(afc)afc.style.opacity='0.85';drawFigs();},7000);
+    setTimeout(()=>{
+      const hl=document.getElementById('ahl');
+      if(hl)Array.from(hl.querySelectorAll('.a-word')).forEach(w=>{w.style.opacity='0';w.style.transform='translateY(-15px)';});
+      setASub('',100);if(afc)afc.style.opacity='0';figVis=false;figP=0;
+      setTimeout(()=>{setAHl(['$100K','Ads.','$149.'],[0,2]);setASub("No agency is doing this. Not at these prices.",600);},500);
+      aShow('aprice',1200);
+    },10500);
+    setTimeout(()=>aShow('acta',0),13000);
+    setTimeout(()=>{
+      aHide('aprice');aHide('acta');aHide('apills');aHide('asub');
+      const hl=document.getElementById('ahl');
+      if(hl)Array.from(hl.querySelectorAll('.a-word')).forEach(w=>{w.style.opacity='0';w.style.transform='translateY(-15px)';});
+      pillsDone=false;
+      setTimeout(()=>ambientSeq(),1000);
+    },15500);
+  }
+  setTimeout(()=>ambientSeq(),800);
+  window.addEventListener('resize',resizeA);
+}
+</script>
+</body>
+</html>
